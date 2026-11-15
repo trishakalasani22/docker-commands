@@ -1,0 +1,130 @@
+
+C:\Users\Admin>docker run -d ^
+More?  --name mongodb ^
+More? -e MONGO_INITDB_ROOT_USERNAME=admin ^
+More? -e MONGO_INITDB_ROOT_PASSWORD=admin123 ^
+More? -p 27017:27017 ^
+More?  mongo
+Unable to find image 'mongo:latest' locally
+latest: Pulling from library/mongo
+3da35589eb89: Pull complete
+ec74c5fb0de4: Pull complete
+4ac023c0ba6f: Pull complete
+222ece0c969d: Pull complete
+493b9a5c1406: Pull complete
+a60ef8ec184e: Pull complete
+63680cf47926: Pull complete
+fd8b5fe13ef4: Pull complete
+4b7f08216c45: Download complete
+eee770967154: Download complete
+Digest: sha256:bac22ea7710d774103dcad3ec8ac13cba1eb378f488e3ce8a6b3a1adf2ba9dcc
+Status: Downloaded newer image for mongo:latest
+10c8a3ccab633990e57d67270ade147c082309d9c8a0475f678b3fc6096e88d1
+
+C:\Users\Admin>docker exec -it mongodb mongosh -u admin -p admin123
+Current Mongosh Log ID: 6ac52e476473b2d2193bb245
+Connecting to:          mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.12.0
+Using MongoDB:          9.0.2
+Using Mongosh:          2.12.0
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+
+To help improve our products, pseudo-anonymous usage data is collected from interactive and agentic sessions only, and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the disableTelemetry() command.
+
+------
+   The server generated these startup warnings when booting
+   2026-10-06T17:20:36.642+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2026-10-06T17:20:37.013+00:00: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2026-10-06T17:20:37.013+00:00: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2026-10-06T17:20:37.013+00:00: We suggest setting the contents of sysfsFile to 0.
+   2026-10-06T17:20:37.013+00:00: We suggest setting swappiness to 0 or 1, as swapping can cause performance problems.
+------
+
+
+test> show dbs
+admin   100.00 KiB
+config   12.00 KiB
+local    72.00 KiB
+test> use booksDB
+switched to db booksDB
+booksDB> db.createCollection("books")
+| { ok: 1 }
+1
+booksDB> show collections
+| books
+books
+booksDB> db.books.insertOne({
+| title: "The Great Gatsby",
+|  author: "F. Scott Fitzgerald",
+|  category: "Classic",
+|  price: 299.99
+| })
+{
+  acknowledged: true,
+  insertedId: ObjectId('6ac52ee16473b2d2193bb246')
+}
+booksDB> db.books.insertMany([
+|  { title: "1984", author: "George Orwell", category: "Dystopian", price: 199.99 },
+|   { title: "To Kill a Mockingbird", author: "Harper Lee", category: "Classic", price: 249.99 },
+| { title: "The Hobbit", author: "J.R.R. Tolkien", category: "Fantasy", price: 349.99 }
+| ])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6ac52f146473b2d2193bb247'),
+    '1': ObjectId('6ac52f146473b2d2193bb248'),
+    '2': ObjectId('6ac52f146473b2d2193bb249')
+  }
+}
+booksDB> db.books.find()
+[
+  {
+    _id: ObjectId('6ac52ee16473b2d2193bb246'),
+    title: 'The Great Gatsby',
+    author: 'F. Scott Fitzgerald',
+    category: 'Classic',
+    price: 299.99
+  },
+  {
+    _id: ObjectId('6ac52f146473b2d2193bb247'),
+    title: '1984',
+    author: 'George Orwell',
+    category: 'Dystopian',
+    price: 199.99
+  },
+  {
+    _id: ObjectId('6ac52f146473b2d2193bb248'),
+    title: 'To Kill a Mockingbird',
+    author: 'Harper Lee',
+    category: 'Classic',
+    price: 249.99
+  },
+  {
+    _id: ObjectId('6ac52f146473b2d2193bb249'),
+    title: 'The Hobbit',
+    author: 'J.R.R. Tolkien',
+    category: 'Fantasy',
+    price: 349.99
+  }
+]
+booksDB> db.books.find({ category: "Classic" })
+[
+  {
+    _id: ObjectId('6ac52ee16473b2d2193bb246'),
+    title: 'The Great Gatsby',
+    author: 'F. Scott Fitzgerald',
+    category: 'Classic',
+    price: 299.99
+  },
+  {
+    _id: ObjectId('6ac52f146473b2d2193bb248'),
+    title: 'To Kill a Mockingbird',
+    author: 'Harper Lee',
+    category: 'Classic',
+    price: 249.99
+  }
+]
+booksDB> db.books.deleteOne({ title: "The Hobbit" })
+{ acknowledged: true, deletedCount: 1 }
